@@ -39,6 +39,13 @@ fn main() {
                     println!("Usage: remove <task ID>");
                 }
             }
+            "help" => {
+                println!("Usage: todo <command> [options]");
+                println!("Commands:");
+                println!("  add <task description> - Add a new task");
+                println!("  list - List all tasks");
+                println!("  done <task ID> - Mark a task as done");
+            }
             _ => println!("Unknown command."),
         }
     } else {
