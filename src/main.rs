@@ -1,26 +1,26 @@
 use std::env;
 mod task;
-use task::{Task, add_task, list_tasks, complete_task, remove_task, load_tasks, save_tasks};
+use task::{Task, TaskManager};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let mut tasks = load_tasks().unwrap_or_else(|_| Vec::new());
+    let mut tasks = TaskManager::load_tasks("todo.txt").unwrap_or_else(|_| Vec::new());
 
     if args.len() > 1 {
         let command = &args[1];
         match command.as_str() {
             "add" => {
                 if args.len() > 2 {
-                    add_task(&mut tasks, args[2..].join(" "));
+                    TaskManager::add_task(&mut tasks, args[2..].join(" "));
                 } else {
                     println!("Usage: add <task description>");
                 }
             }
-            "list" => list_tasks(&tasks),
+            "list" => TaskManager::list_tasks(&tasks),
             "done" => {
                 if args.len() > 2 {
                     if let Ok(id) = args[2].parse::<usize>() {
-                        complete_task(&mut tasks, id);
+                        TaskManager::complete_task(&mut tasks, id);
                     } else {
                         println!("Invalid task ID.");
                     }
@@ -31,7 +31,7 @@ fn main() {
             "remove" => {
                 if args.len() > 2 {
                     if let Ok(id) = args[2].parse::<usize>() {
-                        remove_task(&mut tasks, id);
+                        TaskManager::remove_task(&mut tasks, id);
                     } else {
                         println!("Invalid task ID.");
                     }
@@ -42,8 +42,8 @@ fn main() {
             _ => println!("Unknown command."),
         }
     } else {
-        list_tasks(&tasks);
+        TaskManager::list_tasks(&tasks);
     }
 
-    save_tasks(&tasks).expect("Failed to save tasks.");
+    TaskManager::save_tasks(&tasks, "todo.txt").expect("Failed to save tasks.");
 }
